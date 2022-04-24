@@ -1,4 +1,4 @@
-## Watcher
+# Watcher
 
 ```bash
 conda activate $(pwd)/.env
