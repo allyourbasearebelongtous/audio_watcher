@@ -63,8 +63,10 @@ def create_edl_xml(df, root):
   """
   def row_xml(row):
     edit_attrs = {}
-    for attr in ["start_time", "duration"]:
+    for attr in ["start_time", "duration", "uuid"]:
       edit_attrs[attr] = row[attr]
+    edit_attrs["file"] = edit_attrs["uuid"]
+    del edit_attrs["uuid"]
     edit_entry = et.SubElement(root, "Edit", edit_attrs)
     channels_entry = et.SubElement(edit_entry, "ChannelMap")
 
