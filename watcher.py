@@ -13,6 +13,7 @@ parser = ArgumentParser(
     description="Watch a directory and construct an XML file",
     add_help=True,
     usage="[options] directory")
+parser.add_argument("--name", dest="name", default="leah")
 parser.add_argument("--output", dest="output", default="video.xml")
 parser.add_argument("--extension", "-e", nargs="*", default=["mp4"])
 parser.add_argument("directory", metavar="directory")
@@ -34,8 +35,8 @@ for f in existing_files:
     file_df = watcher.process_file(f)
     df = pd.concat([df, file_df])
 
-# xml = watcher.files_to_xml(df)
-# print(xml)
+xml = watcher.to_xml(args.name, df)
+print(xml)
 
 for changes in watch(directory):
     print(changes)
