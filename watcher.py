@@ -25,7 +25,8 @@ directory = abspath(args.directory)
 # First read the files in the directory
 existing_files = []
 for ext in extensions:
-    existing_files.extend(glob.glob("{}/*.{}".format(directory, ext)))
+    glob_str = "{}/*.{}".format(directory, ext)
+    existing_files.extend(glob.glob(glob_str))
 
 df = pd.DataFrame()
 
@@ -33,7 +34,10 @@ for f in existing_files:
     file_df = watcher.process_file(f)
     df = pd.concat([df, file_df])
 
-print(df)
+# xml = watcher.files_to_xml(df)
+# print(xml)
 
 for changes in watch(directory):
     print(changes)
+
+
