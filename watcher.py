@@ -36,7 +36,7 @@ for f in existing_files:
     df = pd.concat([df, file_df])
 
 xml = watcher.to_xml(args.name, df)
-print(xml)
+print(xml.decode('ascii'))
 
 for changes in watch(directory):
     print(changes)
