@@ -13,15 +13,17 @@ parser = ArgumentParser(
     description="Watch a directory and construct an XML file",
     add_help=True,
     usage="[options] directory")
-parser.add_argument("--name", dest="name", default="leah")
-parser.add_argument("--output", dest="output", default="video.xml")
-parser.add_argument("--extension", "-e", nargs="*", default=["mp4"])
-parser.add_argument("directory", metavar="directory")
+parser.add_argument("--name", dest="name", default="leah", help='name of the file')
+parser.add_argument("--output", dest="output", default="video.xml", help='video output')
+parser.add_argument("--extension", "-e", nargs="*", default=["mp4"], help='extension of the file')
+parser.add_argument("directory", metavar="directory", help='directory')
 
 args = parser.parse_args()
 
 extensions = args.extension
 directory = abspath(args.directory)
+output = abspath(args.output)
+
 
 # First read the files in the directory
 existing_files = []
@@ -38,7 +40,13 @@ for f in existing_files:
 xml = watcher.to_xml(args.name, df)
 print(xml.decode('ascii'))
 
-for changes in watch(directory):
-    print(changes)
+# Todo: Ensure/Test output directory exists
+
+with open(output, 'w') as f:
+    f.write(xml.decode("ascii"))
+
+    
+# for changes in watch(directory):
+    # print(changes)
 
 

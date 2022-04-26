@@ -19,9 +19,9 @@ def process_file(video_file):
   end_time = float(start_time) + float(duration)
 
   metadata = {
-        "start_time":start_time,
+        "timecode_in":str(start_time),
 	      "duration":duration,
-        "end_time":end_time,
+        "timecode_out":str(end_time),
 	      "path": video_file,
         "file":  video_file,
         "uuid": str(uuid.uuid4())
@@ -35,8 +35,9 @@ def to_xml(name, df):
   name_entry.text = name
   ## Add files
   files_to_xml(df, root)
+  edl_root = et.SubElement(root, "EDL")
   ## Add edl
-  create_edl_xml(df, root)
+  create_edl_xml(df, edl_root)
   return et.tostring(root, encoding="utf-8", pretty_print=True)
 
 def files_to_xml(df, root):
@@ -62,17 +63,17 @@ def create_edl_xml(df, root):
   </Edit>
   """
   def row_xml(row):
-    edit_attrs = {}
-    for attr in ["start_time", "duration", "uuid"]:
-      edit_attrs[attr] = row[attr]
+    edit_attrs = {"type":"file", "sequence":"0"}
+    for attr in ["timecode_in", "timecode_out", "uuid"]:
+      edit_attrs[attr] = str(row[attr])
     edit_attrs["file"] = edit_attrs["uuid"]
     del edit_attrs["uuid"]
     edit_entry = et.SubElement(root, "Edit", edit_attrs)
     channels_entry = et.SubElement(edit_entry, "ChannelMap")
 
     channels =    [
-          {"source": str(2), "output": str(1)},
-          {"source": str(1), "output": str(2)}
+          {"source": str(1), "output": str(1)},
+          {"source": str(2), "output": str(2)}
         ]
     for i, chan in enumerate(channels):
       channel_entry = et.SubElement(channels_entry, "Channel")
@@ -83,3 +84,19 @@ def create_edl_xml(df, root):
       entry.text = channels[i]["output"]
 
   df.apply(row_xml, axis=1)
+
+
+"""
+    Channel 1:
+    Source -> Index:1
+    Output -> Stream 1
+    CHannel 2:
+    Source -> Index:2
+    Output -> Stream 2
+    Source -> Index:3
+    Output -> Stream 1
+    CHannel 2:
+    Source -> Index:4
+    Output -> Stream 4
+    
+"""
