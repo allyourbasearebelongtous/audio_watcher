@@ -2,6 +2,7 @@ import glob
 from argparse import ArgumentParser
 from os import listdir
 from os.path import abspath, isfile, join
+# import numpy
 
 import ffmpeg
 import pandas as pd
@@ -15,7 +16,7 @@ parser = ArgumentParser(
     usage="[options] directory")
 parser.add_argument("--name", dest="name", default="leah", help='name of the file')
 parser.add_argument("--output", dest="output", default="video.xml", help='video output')
-parser.add_argument("--extension", "-e", nargs="*", default=["mp4"], help='extension of the file')
+parser.add_argument("--extension", "-e", nargs="*", default=["mp4", "mxf", "MP4", "MXF"], help='extension of the file')
 parser.add_argument("directory", metavar="directory", help='directory')
 
 args = parser.parse_args()
@@ -24,6 +25,7 @@ extensions = args.extension
 directory = abspath(args.directory)
 output = abspath(args.output)
 
+clipsArray = []
 
 # First read the files in the directory
 existing_files = []
@@ -32,6 +34,8 @@ for ext in extensions:
     existing_files.extend(glob.glob(glob_str))
 
 df = pd.DataFrame()
+media = df.values
+print('media = {}'.format(media))
 
 for f in existing_files:
     file_df = watcher.process_file(f)

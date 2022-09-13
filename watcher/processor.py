@@ -1,8 +1,12 @@
+from multiprocessing.managers import ListProxy
 import uuid
 
 import ffmpeg as ff
 import pandas as pd
 from lxml import etree as et
+import watcher.mv as movie
+import numpy as np
+
 
 
 def process_file(video_file):
@@ -26,8 +30,36 @@ def process_file(video_file):
         "file":  video_file,
         "uuid": str(uuid.uuid4())
 	     }
+  # movie.edit_clips(video_file)
   df = pd.DataFrame(data=metadata, index=[video_file])
+  mediafiles = df.iloc[0]
+  #print("mediafiles! = %",mediafiles)
+  dictOfMoviesFiles = df.to_dict()
+  listOfClip = list(dictOfMoviesFiles['file'])
+  
+  prepConcatenate(listOfClip)
+  
+  #listOfMoviesFiles = list(dictOfMoviesFiles.items)
+  # listOfMoviesFiles = list(dictOfMoviesFiles['file'])
+  #print(listOfMoviesFiles)
+  #listOfClips = []
+  #for i in listOfMoviesFiles: 
+   # listOfClips.append(i)
+    #print(listOfClips)
+  #movie.edit_clips(listOfMoviesFiles)
+  #print(listOfClips)
+  # print(listOfMoviesFiles)
+  # print(df[metadata["file"]])
+  
   return df
+
+####### - Prepare for Concatenation - ########
+def prepConcatenate(clips):
+  for items in clips:
+    movie.movieclips.append(items)
+    #print(movie.movieclips)
+    movie.edit_clips(movie.movieclips)
+    return movie.movieclips
 
 def to_xml(name, df):
   root = et.Element("VantagePlayList")
@@ -85,6 +117,11 @@ def create_edl_xml(df, root):
 
   df.apply(row_xml, axis=1)
 
+
+"""
+
+
+"""
 
 """
     Channel 1:
